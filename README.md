@@ -1,5 +1,11 @@
 # Cloud Computing 2025 - Trabajo Final
 
+## Crear volumenes
+
+```sh
+mkdir -p node-red-data
+```
+
 ## Levantar contenedores
 
 ```sh
