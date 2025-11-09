@@ -1,8 +1,12 @@
 services:
   mqtt:
-    image: eclipse-mosquitto
+    image: eclipse-mosquitto:2
+    container_name: mqtt_broker
+    ports:
+      - "1883:1883"
     volumes:
       - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    restart: unless-stopped
   nodered:
     image: nodered/node-red
     ports:
@@ -10,7 +14,9 @@ services:
     volumes:
       - ./node-red-data:/data
       - /dev/snd:/dev/snd
-    links:
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+    depends_on:
       - mqtt
-        #- influxdb
+    restart: unless-stopped
 
