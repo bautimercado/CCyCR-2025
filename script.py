@@ -1,5 +1,6 @@
 import pygame
 import paho.mqtt.client as mqtt
+from paho.mqtt.client import CallbackAPIVersion
 import json
 import time
 
@@ -8,23 +9,50 @@ BROKER = "localhost"
 PORT = 1883
 TOPIC_CONTROL = "robot/control"
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
+connected = False
+
+def on_connect(client, userdata, flags, reason_code, properties):
+    global connected
+    if reason_code == 0:
         print("Conectado al broker MQTT")
+        connected = True
     else:
-        print("Fallo de conexion, codigo de resultado: ", rc)
+        print(f"Error de conexión: {reason_code}")
+        connected = False
 
 
-def on_publish(client, userdata, mid):
+def on_disconnect(client, userdata, flags, reason_code, properties):
+    global connected
+    print(f"Desconectado del broker (reason: {reason_code})")
+    connected = False
+
+
+def on_publish(client, userdata, mid, reason_code, properties):
     pass
 
 
-client = mqtt.Client("JoystickPublisher")
+client = mqtt.Client(
+    client_id="JoystickPublisher",
+    callback_api_version=CallbackAPIVersion.VERSION2
+)
 client.on_connect = on_connect
+client.on_disconnect = on_disconnect
 client.on_publish = on_publish
 
 try:
     client.connect(BROKER, PORT, 60)
+    client.loop_start()
+    
+    # Esperar a que se conecte
+    timeout = 5
+    start = time.time()
+    while not connected and (time.time() - start) < timeout:
+        time.sleep(0.1)
+
+    if not connected:
+        print(f"❌ No se pudo conectar al broker en {timeout} segundos")
+        exit()
+
 except Exception as e:
     print("No se pudo conectar al broker MQTT:", e)
     exit(1)
@@ -68,9 +96,18 @@ try:
     clock = pygame.time.Clock()
     screen = None
 
+    running = True
     while True:
+        if not connected:
+            print("⚠️  Reconectando...")
+            try:
+                client.reconnect()
+            except:
+                pass
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                running = False
                 raise KeyboardInterrupt
             
         pygame.event.pump()
@@ -96,6 +133,13 @@ except KeyboardInterrupt:
     print("Saliendo...")
     client.publish(TOPIC_CONTROL, json.dumps({"comando": "PARAR"}))
 finally:
+    try:
+        if connected:
+            client.publish(TOPIC_CONTROL, json.dumps({"comando": "PARAR"}))
+            time.sleep(0.1)
+    except:
+        pass
+
     pygame.quit()
     client.loop_stop()
     client.disconnect()
