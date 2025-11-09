@@ -1,0 +1,433 @@
+[
+    {
+        "id": "d9f3da2cd4c6ef62",
+        "type": "tab",
+        "label": "Flujo 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "mqtt_in",
+        "type": "mqtt in",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Recibir comandos",
+        "topic": "robot/control",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "28b6d2b083192e2a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "debug_raw",
+                "parse_json"
+            ]
+        ]
+    },
+    {
+        "id": "debug_raw",
+        "type": "debug",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Raw MQTT",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 370,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "parse_json",
+        "type": "json",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Parse JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "debug_parsed",
+                "extract_comando"
+            ]
+        ]
+    },
+    {
+        "id": "debug_parsed",
+        "type": "debug",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Parsed JSON",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.comando",
+        "statusType": "msg",
+        "x": 600,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "extract_comando",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Extraer comando",
+        "func": "msg.comando = msg.payload.comando;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 320,
+        "wires": [
+            [
+                "switch_comando"
+            ]
+        ]
+    },
+    {
+        "id": "switch_comando",
+        "type": "switch",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Switch Comando",
+        "property": "comando",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "ADELANTE",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ATRAS",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "IZQUIERDA",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "DERECHA",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "PARAR",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 5,
+        "x": 770,
+        "y": 320,
+        "wires": [
+            [
+                "f1a0add1049b163a"
+            ],
+            [
+                "b663f5e84fc91398"
+            ],
+            [
+                "d8c06b600ef34a2c"
+            ],
+            [
+                "c6351b25e0ebc6d8"
+            ],
+            [
+                "debug_stop"
+            ]
+        ]
+    },
+    {
+        "id": "debug_adelante",
+        "type": "debug",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "⬆️ ADELANTE",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "ADELANTE",
+        "statusType": "str",
+        "x": 1180,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "debug_atras",
+        "type": "debug",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "⬇️ ATRAS",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "ATRAS",
+        "statusType": "str",
+        "x": 1170,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "debug_izquierda",
+        "type": "debug",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "⬅️ IZQUIERDA",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "IZQUIERDA",
+        "statusType": "str",
+        "x": 1180,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "debug_derecha",
+        "type": "debug",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "➡️ DERECHA",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "DERECHA",
+        "statusType": "str",
+        "x": 1200,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "debug_stop",
+        "type": "debug",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "⏹️ STOP",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "STOP",
+        "statusType": "str",
+        "x": 980,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "f1a0add1049b163a",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "function 1",
+        "func": "msg.payload = 1\n// NO ES msg.comando = 1\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 200,
+        "wires": [
+            [
+                "debug_adelante"
+            ]
+        ]
+    },
+    {
+        "id": "c564d54680e5b2fd",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "IZQ ADELANTE",
+        "pin": "",
+        "set": "",
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 1400,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "de069ae3d56fd6f5",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "IZQ ATRAS",
+        "pin": "",
+        "set": "",
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 1390,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "58c1f4f9de172d67",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "DER ADELANTE",
+        "pin": "",
+        "set": "",
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 1410,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "86e6e40beec3a029",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "DER ATRAS",
+        "pin": "",
+        "set": "",
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 1390,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "b663f5e84fc91398",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "function 2",
+        "func": "msg.payload = 1\n// NO ES msg.comando = 1\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 978,
+        "y": 282,
+        "wires": [
+            [
+                "debug_atras"
+            ]
+        ]
+    },
+    {
+        "id": "d8c06b600ef34a2c",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "function 3",
+        "func": "msg.payload = 1\n// NO ES msg.comando = 1\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 320,
+        "wires": [
+            [
+                "debug_izquierda"
+            ]
+        ]
+    },
+    {
+        "id": "c6351b25e0ebc6d8",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "function 4",
+        "func": "msg.payload = 1\n// NO ES msg.comando = 1\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 400,
+        "wires": [
+            [
+                "debug_derecha"
+            ]
+        ]
+    },
+    {
+        "id": "2e493ca3353f7212",
+        "type": "comment",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "",
+        "info": "HACER QUE EL STOP PONGA EN 0 EL RESTO DE LOS GPIO\nEL STOP PODRÍA SER ALGUNO DE LOS OTROS BOTONES",
+        "x": 1260,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "28b6d2b083192e2a",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "mqtt_broker",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "5",
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "9f7a97f56469e7af",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-pi-gpio": "2.0.6"
+        }
+    }
+]
