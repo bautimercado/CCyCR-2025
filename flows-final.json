@@ -1,0 +1,454 @@
+[
+    {
+        "id": "d9f3da2cd4c6ef62",
+        "type": "tab",
+        "label": "Flujo 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "mqtt_in",
+        "type": "mqtt in",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Recibir comandos",
+        "topic": "robot/control",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "28b6d2b083192e2a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "parse_json"
+            ]
+        ]
+    },
+    {
+        "id": "parse_json",
+        "type": "json",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Parse JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "extract_comando"
+            ]
+        ]
+    },
+    {
+        "id": "extract_comando",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Extraer comando",
+        "func": "msg.comando = msg.payload.comando;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 320,
+        "wires": [
+            [
+                "switch_comando"
+            ]
+        ]
+    },
+    {
+        "id": "switch_comando",
+        "type": "switch",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Switch Comando",
+        "property": "comando",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "ADELANTE",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ATRAS",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "IZQUIERDA",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "DERECHA",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "PARAR",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 5,
+        "x": 770,
+        "y": 320,
+        "wires": [
+            [
+                "f1a0add1049b163a"
+            ],
+            [
+                "b663f5e84fc91398"
+            ],
+            [
+                "d8c06b600ef34a2c"
+            ],
+            [
+                "c6351b25e0ebc6d8"
+            ],
+            [
+                "b80cdbb765f7c9e3"
+            ]
+        ]
+    },
+    {
+        "id": "f1a0add1049b163a",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "ADELANTE",
+        "func": "msg.payload = 1\n// NO ES msg.comando = 1\nif (global.get(\"obstaculo\")== 1){\nreturn msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 200,
+        "wires": [
+            [
+                "e90bf75473e4cb05",
+                "7420da55eba55bd1"
+            ]
+        ]
+    },
+    {
+        "id": "b663f5e84fc91398",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "ATRAS",
+        "func": "msg.payload = 1\n// NO ES msg.comando = 1\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 280,
+        "wires": [
+            [
+                "59219c5163b3d34b",
+                "bb6f9915e2edaae7"
+            ]
+        ]
+    },
+    {
+        "id": "d8c06b600ef34a2c",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "IZQUIERDA",
+        "func": "msg.payload = 1\n// NO ES msg.comando = 1\nif (global.get(\"obstaculo\")== 1){\nreturn msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 320,
+        "wires": [
+            [
+                "59219c5163b3d34b",
+                "7420da55eba55bd1"
+            ]
+        ]
+    },
+    {
+        "id": "c6351b25e0ebc6d8",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "DERECHA",
+        "func": "msg.payload = 1\n// NO ES msg.comando = 1\nif (global.get(\"obstaculo\")== 1){\nreturn msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 400,
+        "wires": [
+            [
+                "bb6f9915e2edaae7",
+                "e90bf75473e4cb05"
+            ]
+        ]
+    },
+    {
+        "id": "59219c5163b3d34b",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Izq Atras",
+        "pin": "6",
+        "set": true,
+        "level": "0",
+        "freq": "100",
+        "out": "out",
+        "bcm": true,
+        "x": 1420,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "bb6f9915e2edaae7",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Der Atras",
+        "pin": "19",
+        "set": true,
+        "level": "0",
+        "freq": "100",
+        "out": "out",
+        "bcm": true,
+        "x": 1380,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "e90bf75473e4cb05",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Iz Ade",
+        "pin": "26",
+        "set": true,
+        "level": "0",
+        "freq": "100",
+        "out": "out",
+        "bcm": true,
+        "x": 1450,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "7420da55eba55bd1",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "Der Ade",
+        "pin": "13",
+        "set": true,
+        "level": "0",
+        "freq": "100",
+        "out": "out",
+        "bcm": true,
+        "x": 1460,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "b80cdbb765f7c9e3",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "STOP",
+        "func": "msg.payload = 0\n// NO ES msg.comando = 1\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 480,
+        "wires": [
+            [
+                "bb6f9915e2edaae7",
+                "59219c5163b3d34b",
+                "7420da55eba55bd1",
+                "e90bf75473e4cb05"
+            ]
+        ]
+    },
+    {
+        "id": "50e7e635bffa6e58",
+        "type": "rpi-gpio in",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "SENSOR OBSTACULO",
+        "pin": "18",
+        "intype": "tri",
+        "debounce": "25",
+        "read": true,
+        "bcm": true,
+        "x": 180,
+        "y": 440,
+        "wires": [
+            [
+                "b80cdbb765f7c9e3",
+                "2cfe78317e577014",
+                "528cd9ef48006cd6",
+                "28634d743e4732ad"
+            ]
+        ]
+    },
+    {
+        "id": "2cfe78317e577014",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "function 1",
+        "func": "global.set(\"obstaculo\", msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.set(\"obstaculo\",1)",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a6fe051ae558dcad",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "ZUMBADOR",
+        "pin": "23",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 690,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "528cd9ef48006cd6",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "function 2",
+        "func": "if(msg.payload ==1){\n    msg.payload=0;\n\n}else{\n    msg.payload=1;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 500,
+        "wires": [
+            [
+                "a6fe051ae558dcad",
+                "3f0e36f62fc37b2d"
+            ]
+        ]
+    },
+    {
+        "id": "28634d743e4732ad",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "VERDE",
+        "pin": "16",
+        "set": true,
+        "level": "1",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 680,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "3f0e36f62fc37b2d",
+        "type": "rpi-gpio out",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "rojo",
+        "pin": "5",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 710,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "cd3e4ff21a24ad5e",
+        "type": "function",
+        "z": "d9f3da2cd4c6ef62",
+        "name": "function 3",
+        "func": "if (msg.payload == 0) {\n    return msg;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 540,
+        "wires": [
+            [
+                "3f0e36f62fc37b2d"
+            ]
+        ]
+    },
+    {
+        "id": "28b6d2b083192e2a",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "163.10.53.30",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "5",
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "8f49a133ebecaa49",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-pi-gpio": "2.0.6"
+        }
+    }
+]
